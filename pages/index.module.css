@@ -70,3 +70,18 @@
   max-width: 100%;
   object-fit: cover;
 }
+
+.colorPickerContainer {
+  display: flex;
+}
+
+.colorPickerContainer > * ~ * {
+  margin-left: 12px;
+}
+
+.colorPicker {
+  width: 48px;
+  height: 48px;
+  border: 1px dotted black;
+  cursor: pointer;
+}

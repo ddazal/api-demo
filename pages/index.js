@@ -1,64 +1,67 @@
-import Head from "next/head";
-import { useState } from "react";
+import orangeCar from '../sprites/car-orange.png'
+import whiteCar from '../sprites/car-white.png'
+import blueCar from '../sprites/car-blue.png'
+import yellowCar from '../sprites/car-yellow.png'
+import { useState } from 'react'
+import Head from 'next/head'
 import styles from "./index.module.css";
+import Image from 'next/image'
 
-export default function Home() {
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false)
-  const [result, setResult] = useState([]);
-
-  async function onSubmit(event) {
-    event.preventDefault();
-    setIsLoading(true)
-    const response = await fetch("/api/generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ input }),
-    });
-    const data = await response.json();
-    setResult(data.result);
-    setInput("");
-    setIsLoading(false)
+function getCar(color) {
+  switch (color) {
+    case 'orange':
+      return orangeCar
+    case 'blue':
+      return blueCar
+    case 'yellow':
+      return yellowCar
+    default:
+      return whiteCar
   }
+}
+
+export default function Race() {
+  const [color, setColor] = useState('white')
+  const image = getCar(color)
 
   return (
-    <div>
-      <Head>
-        <title>API Demo</title>
-        <link rel="icon" href="/dog.png" />
-      </Head>
-
-      <main className={styles.main}>
-        {/* <img src="/dog.png" className={styles.icon} /> */}
-        <h3>Generate an image</h3>
-        <form onSubmit={onSubmit}>
-          <input
-            type="text"
-            name="input"
-            placeholder="Please, describe..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            autoComplete="off"
-          />
-          <input
-            type="submit"
-            value={isLoading ? "Loading" : "Generate"}
-            disabled={isLoading}
-            required
-          />
-        </form>
-        <div className={styles.result}>
-          {
-            result.map((item, index) => (
-              <div key={index} style={{ width: 300, height: 300 }}>
-                <img src={item.url} />
-              </div>
-            ))
-          }
-        </div>
-      </main>
-    </div>
-  );
+    <>
+    <Head>
+      <title>API Demo</title>
+      <link rel="icon" href="/dog.png" />
+    </Head>
+    <main className={styles.main}>
+      <h3>Pick a color</h3>
+      <div className={styles.colorPickerContainer}>
+        <button 
+          className={styles.colorPicker}
+          style={{ backgroundColor: 'white'}}
+          value="white"
+          onClick={e => setColor(e.target.value)}
+        ></button>
+        <button 
+          className={styles.colorPicker}
+          style={{ backgroundColor: 'orange'}}
+          value="orange"
+          onClick={e => setColor(e.target.value)}
+        ></button>
+        <button 
+          className={styles.colorPicker}
+          style={{ backgroundColor: 'blue'}}
+          value="blue"
+          onClick={e => setColor(e.target.value)}
+        ></button>
+        <button 
+          className={styles.colorPicker}
+          style={{ backgroundColor: 'yellow'}}
+          value="yellow"
+          onClick={e => setColor(e.target.value)}
+        ></button>
+      </div>
+      <div style={{ marginTop: '16px' }}>
+        <Image src={image} width={640} height={320} />
+      </div>
+    </main>
+    </>
+  )
 }
