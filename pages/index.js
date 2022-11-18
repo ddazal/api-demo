@@ -3,44 +3,61 @@ import { useState } from "react";
 import styles from "./index.module.css";
 
 export default function Home() {
-  const [animalInput, setAnimalInput] = useState("");
-  const [result, setResult] = useState();
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false)
+  const [result, setResult] = useState([]);
 
   async function onSubmit(event) {
     event.preventDefault();
+    setIsLoading(true)
     const response = await fetch("/api/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ animal: animalInput }),
+      body: JSON.stringify({ input }),
     });
     const data = await response.json();
     setResult(data.result);
-    setAnimalInput("");
+    setInput("");
+    setIsLoading(false)
   }
 
   return (
     <div>
       <Head>
-        <title>OpenAI Quickstart</title>
+        <title>API Demo</title>
         <link rel="icon" href="/dog.png" />
       </Head>
 
       <main className={styles.main}>
-        <img src="/dog.png" className={styles.icon} />
-        <h3>Name my pet</h3>
+        {/* <img src="/dog.png" className={styles.icon} /> */}
+        <h3>Generate an image</h3>
         <form onSubmit={onSubmit}>
           <input
             type="text"
-            name="animal"
-            placeholder="Enter an animal"
-            value={animalInput}
-            onChange={(e) => setAnimalInput(e.target.value)}
+            name="input"
+            placeholder="Please, describe..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            autoComplete="off"
           />
-          <input type="submit" value="Generate names" />
+          <input
+            type="submit"
+            value={isLoading ? "Loading" : "Generate"}
+            disabled={isLoading}
+            required
+          />
         </form>
-        <div className={styles.result}>{result}</div>
+        <div className={styles.result}>
+          {
+            result.map((item, index) => (
+              <div key={index} style={{ width: 300, height: 300 }}>
+                <img src={item.url} />
+              </div>
+            ))
+          }
+        </div>
       </main>
     </div>
   );
